@@ -1,0 +1,24 @@
+name: CI - Docker Flask Build
+
+on:
+  pull_request:
+
+jobs:
+  build-and-docker:
+    runs-on: ubuntu-latest
+    name: Build Flask Image
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (notes-service)
+        working-directory: backend/notes-service
+        run: |
+          docker build -t tynaz02/notes-service:VersionNotes1 .
+
+      - name: List Docker images
+        run: docker images

@@ -18,7 +18,7 @@ jobs:
       - name: Build Docker image (notes-service)
         working-directory: backend/notes-service
         run: |
-          docker build -t tynaz02/notes-service:VersionNotes1 .
+          docker build -t tynaz02/notes-service:VersionNotes2 .
 
       - name: List Docker images
         run: docker images

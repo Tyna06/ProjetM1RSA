@@ -6,3 +6,4 @@
 # Dossiers de build
 **/__pycache__/
 **/node_modules/
+.idea/

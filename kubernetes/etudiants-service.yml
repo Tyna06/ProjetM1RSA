@@ -16,7 +16,7 @@ spec:
         - name: etudiants-container
           image: tynaz02/etudiants-service:Version1
           ports:
-            - containerPort: 5000
+            - containerPort: 5001
 
 ---
 
@@ -30,5 +30,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 5000
+      targetPort: 5001
   type: NodePort

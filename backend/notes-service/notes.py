@@ -27,7 +27,8 @@ def add_note():
 
     # Vérifier si l'étudiant existe dans le microservice etudiants
     try:
-        resp = requests.get(f"http://etudiant-service/etudiants/{id_etudiant}")
+        # Utilise localhost:5001 uniquement pour les tests en local
+        resp = requests.get(f"http://localhost:5001/etudiants/{id_etudiant}")
         if resp.status_code != 200:
             return jsonify({"error": "Étudiant non trouvé"}), 404
     except Exception as e:

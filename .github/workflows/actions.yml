@@ -37,7 +37,7 @@ jobs:
       - name: Build Docker image (etudiants-service)
         working-directory: backend/etudiants-service
         run: |
-          docker build -t tynaz02/etudiants-service:Version1 .
+          docker build -t tynaz02/etudiants-service:Version2 .
 
       - name: List Docker images
         run: docker images

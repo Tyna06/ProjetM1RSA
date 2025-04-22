@@ -24,6 +24,14 @@ def add_etudiant():
     }
     etudiants.append(new_etudiant)
     return jsonify({"message": "Étudiant ajouté", "etudiant": new_etudiant}), 201
+# GET : récupérer un étudiant par ID
+@app.route("/etudiants/<int:id_etudiant>", methods=["GET"])
+def get_etudiant(id_etudiant):
+    etudiant = next((e for e in etudiants if e["id"] == id_etudiant), None)
+    if etudiant:
+        return jsonify(etudiant)
+    else:
+        return jsonify({"error": "Étudiant non trouvé"}), 404
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes des Étudiants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-graduation-cap"></i>
+                Notes des Étudiants
+            </h1>
+            <div class="admin-info">
+                <a href="{{ url_for('ajouter_note') }}" class="admin-button">
+                    <i class="fas fa-plus"></i> Ajouter une note
+                </a>
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-button outline">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+
+        <!-- Tableau de bord des notes -->
+        <div class="notes-dashboard">
+            <div class="notes-dashboard-card">
+                <div class="notes-dashboard-header">
+                    <div class="notes-dashboard-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="notes-dashboard-title">Total Étudiants</div>
+                </div>
+                <div class="notes-dashboard-value">{{ nombre_etudiants }}</div>
+                <div class="notes-dashboard-label">Étudiants avec au moins une note</div>
+            </div>
+            
+            <div class="notes-dashboard-card">
+                <div class="notes-dashboard-header">
+                    <div class="notes-dashboard-icon green">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="notes-dashboard-title">Moyenne Générale</div>
+                </div>
+                <div class="notes-dashboard-value">{{ moyenne_generale|round(2) }}</div>
+                <div class="notes-dashboard-label">Sur l'ensemble des notes</div>
+            </div>
+            
+            <div class="notes-dashboard-card">
+                <div class="notes-dashboard-header">
+                    <div class="notes-dashboard-icon orange">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="notes-dashboard-title">Total Évaluations</div>
+                </div>
+                <div class="notes-dashboard-value">{{ nombre_evaluations }}</div>
+                <div class="notes-dashboard-label">Évaluations enregistrées</div>
+            </div>
+        </div>
+
+        <!-- Filtres pour la recherche d'étudiant -->
+        <div class="student-filter">
+            <form method="GET" class="student-filter-form">
+                <div class="student-filter-group">
+                    <label for="search_name">Rechercher un étudiant :</label>
+                    <input type="text" id="search_name" name="search_name" placeholder="Nom ou prénom..." value="{{ search_name }}">
+                </div>
+                
+                <div class="student-filter-group">
+                    <label for="matiere_filter">Filtrer par matière :</label>
+                    <select id="matiere_filter" name="matiere_id">
+                        <option value="">Toutes les matières</option>
+                        {% for matiere in matieres %}
+                        <option value="{{ matiere.id }}" {% if matiere_id == matiere.id|string %}selected{% endif %}>
+                            {{ matiere.nom }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="student-filter-group">
+                    <label for="niveau_filter">Filtrer par niveau :</label>
+                    <select id="niveau_filter" name="niveau">
+                        <option value="">Tous les niveaux</option>
+                        {% for niveau in niveaux %}
+                        <option value="{{ niveau }}" {% if niveau_filtre == niveau %}selected{% endif %}>
+                            {{ niveau }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="student-filter-button">
+                    <i class="fas fa-search"></i> Filtrer
+                </button>
+            </form>
+        </div>
+
+        <!-- Tableau des notes des étudiants -->
+        <table class="notes-table">
+            <thead>
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Niveau</th>
+                    {% for matiere in matieres_affichees %}
+                    <th>{{ matiere.nom }}</th>
+                    {% endfor %}
+                    <th>Moyenne</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td class="student-name">{{ etudiant.nom }} {{ etudiant.prenom }}</td>
+                    <td>{{ etudiant.niveau }}</td>
+                    
+                    {% for matiere in matieres_affichees %}
+                    <td class="note-value {% if etudiant.notes[matiere.id] >= 14 %}note-good{% elif etudiant.notes[matiere.id] >= 10 %}note-medium{% elif etudiant.notes[matiere.id] %}note-bad{% endif %}">
+                        {% if etudiant.notes[matiere.id] %}
+                            {{ etudiant.notes[matiere.id]|round(1) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                    
+                    <td class="note-value average {% if etudiant.moyenne >= 14 %}note-good{% elif etudiant.moyenne >= 10 %}note-medium{% else %}note-bad{% endif %}">
+                        {{ etudiant.moyenne|round(1) }}
+                    </td>
+                    
+                    <td class="action-buttons">
+                        <a href="{{ url_for('details_etudiant', id=etudiant.id) }}" class="btn-view" title="Voir détails">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ url_for('ajouter_note_etudiant', id=etudiant.id) }}" class="btn-edit" title="Ajouter une note">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-user-graduate"></i> Détails Étudiant
+            </h1>
+            <div class="admin-info">
+                <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+
+        <!-- Informations de l'étudiant -->
+        <div class="admin-form">
+            <h2>Informations Générales</h2>
+            <p><strong>Nom :</strong> Dupont</p>
+            <p><strong>Prénom :</strong> Alice</p>
+            <p><strong>Email :</strong> alice.dupont@example.com</p>
+            <p><strong>Âge :</strong> 21 ans</p>
+            <p><strong>Niveau :</strong> Licence 3</p>
+
+            <div class="admin-form-buttons" style="margin-top: 20px;">
+                <a href="#" class="admin-button">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+                <a href="#" class="admin-button outline">
+                    <i class="fas fa-trash"></i> Supprimer
+                </a>
+            </div>
+        </div>
+
+        <!-- Notes de l'étudiant -->
+        <div class="note-stats-card" style="margin-top: 30px;">
+            <div class="note-stats-header">
+                <div class="note-stats-title">Notes de l'Étudiant</div>
+                <div class="note-stats-average">Moyenne : 14.2</div>
+            </div>
+
+            <table class="notes-table">
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th>Note</th>
+                        <th>Date</th>
+                        <th>Coefficient</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Mathématiques</td>
+                        <td class="note-good">16</td>
+                        <td>2025-03-15</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Physique</td>
+                        <td class="note-medium">12.5</td>
+                        <td>2025-03-20</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Chimie</td>
+                        <td class="note-good">14</td>
+                        <td>2025-04-10</td>
+                        <td>3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

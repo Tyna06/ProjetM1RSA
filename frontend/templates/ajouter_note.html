@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une Note</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-plus-circle"></i>
+                Ajouter une Note
+            </h1>
+            <div class="admin-info">
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-button outline">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+
+        <div class="note-form">
+            <h2 class="note-form-title">Enregistrer une nouvelle note</h2>
+            
+            <form method="POST">
+                <div class="note-form-group">
+                    <label for="etudiant">Étudiant :</label>
+                    <select id="etudiant" name="etudiant_id" required>
+                        <option value="">Sélectionnez un étudiant</option>
+                        {% for etudiant in etudiants %}
+                        <option value="{{ etudiant.id }}">{{ etudiant.nom }} {{ etudiant.prenom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="note-form-row">
+                    <div class="note-form-col">
+                        <label for="matiere">Matière :</label>
+                        <select id="matiere" name="matiere_id" required>
+                            <option value="">Sélectionnez une matière</option>
+                            {% for matiere in matieres %}
+                            <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="note-form-col">
+                        <label for="note">Note (/20) :</label>
+                        <input type="number" id="note" name="note" min="0" max="20" step="0.5" required>
+                    </div>
+                </div>
+                
+                <div class="note-form-row">
+                    <div class="note-form-col">
+                        <label for="date_evaluation">Date d'évaluation :</label>
+                        <input type="date" id="date_evaluation" name="date_evaluation" required>
+                    </div>
+                    
+                    <div class="note-form-col">
+                        <label for="coefficient">Coefficient :</label>
+                        <input type="number" id="coefficient" name="coefficient" min="1" max="10" value="1" required>
+                    </div>
+                </div>
+                
+                <div class="note-form-group">
+                    <label for="commentaire">Commentaire (optionnel) :</label>
+                    <textarea id="commentaire" name="commentaire" rows="3" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                </div>
+                
+                <div class="admin-form-buttons">
+                    <button type="submit" class="admin-button">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="admin-button outline">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

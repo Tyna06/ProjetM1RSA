@@ -1,0 +1,287 @@
+/* Style général */
+body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+    padding: 20px 0;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 340px;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #e74c3c, #ff7675);
+}
+
+h2 {
+    color: #e74c3c;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #e74c3c, #ff7675);
+    border-radius: 2px;
+}
+
+/* Styles de formulaire */
+form {
+    text-align: left;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+form::-webkit-scrollbar {
+    width: 6px;
+}
+
+form::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+form::-webkit-scrollbar-thumb {
+    background: #e74c3c;
+    border-radius: 10px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin: 8px 0 4px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+    outline: none;
+    background-color: #fff;
+}
+
+/* Styles spécifiques au niveau d'étude */
+.select-wrapper {
+    position: relative;
+}
+
+select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #e74c3c;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+/* Style pour les boutons radio */
+.role-section {
+    margin: 12px 0;
+}
+
+.radio-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.radio-option:hover {
+    background-color: #f0f0f0;
+}
+
+.radio-option input[type="radio"] {
+    margin-right: 6px;
+    accent-color: #e74c3c;
+    cursor: pointer;
+}
+
+/* Style pour le bouton */
+button {
+    background: linear-gradient(90deg, #e74c3c, #ff7675);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 15px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(231, 76, 60, 0.2);
+}
+
+button:hover {
+    background: linear-gradient(90deg, #c0392b, #e74c3c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(231, 76, 60, 0.3);
+}
+
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+/* Lien d'inscription/connexion */
+.signup-link {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.signup-link a {
+    color: #e74c3c;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.signup-link a:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.signup-link a:active {
+    transform: translateY(1px);
+}
+
+/* Placeholders */
+::placeholder {
+    color: #bbb;
+    opacity: 1;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Réponse aux erreurs */
+.error-message {
+    color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.1);
+    padding: 8px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Media queries pour la responsivité */
+@media (max-height: 700px) {
+    body {
+        align-items: flex-start;
+        padding-top: 30px;
+    }
+    
+    .container {
+        margin: 20px 0;
+    }
+    
+    form {
+        max-height: 60vh;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        width: 90%;
+        padding: 20px 15px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 8px;
+    }
+}

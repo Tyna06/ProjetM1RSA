@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inscription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Inscription</h2>
+        
+        <!-- Message d'erreur (à afficher conditionnellement avec Flask) -->
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="nom">Nom :</label>
+                <input type="text" id="nom" name="nom" placeholder="Entrez votre nom" required>
+            </div>
+
+            <div class="form-group">
+                <label for="prenom">Prénom :</label>
+                <input type="text" id="prenom" name="prenom" placeholder="Entrez votre prénom" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Âge :</label>
+                <input type="number" id="age" name="age" min="16" max="100" placeholder="Entrez votre âge" required>
+            </div>
+
+            <div class="form-group">
+                <label for="niveau">Niveau d'étude :</label>
+                <div class="select-wrapper">
+                    <select id="niveau" name="niveau" required>
+                        <option value="" disabled selected>Sélectionnez votre niveau</option>
+                        <option value="bac">Baccalauréat</option>
+                        <option value="licence">Licence</option>
+                        <option value="master1">Master 1</option>
+                        <option value="lycee2">Master 2</option>
+                        <option value="doctorat">Doctorat</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email :</label>
+                <input type="email" id="email" name="email" placeholder="Entrez votre adresse email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" placeholder="Créez un mot de passe" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Confirmer le mot de passe :</label>
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirmez votre mot de passe" required>
+            </div>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+        
+        <div class="signup-link">
+            <a href="{{ url_for('login') }}">Se connecter</a>
+        </div>
+    </div>
+</body>
+</html>

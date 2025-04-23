@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-user-edit"></i>
+                Modifier Étudiant
+            </h1>
+            <div class="admin-info">
+                <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+            </div>
+        </div>
+
+        <div class="admin-form">
+            <h2>Éditer les informations</h2>
+            <form method="POST">
+                <div class="admin-form-group">
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom" value="{{ etudiant.nom }}" required>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" id="prenom" name="prenom" value="{{ etudiant.prenom }}" required>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="email">Email :</label>
+                    <input type="email" id="email" name="email" value="{{ etudiant.email }}" required>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="age">Âge :</label>
+                    <input type="number" id="age" name="age" value="{{ etudiant.age }}" required>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="niveau">Niveau :</label>
+                    <select id="niveau" name="niveau" required>
+                        {% for n in ['L1', 'L2', 'L3'] %}
+                        <option value="{{ n }}" {% if etudiant.niveau == n %}selected{% endif %}>{{ n }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="admin-form-buttons">
+                    <button type="submit" class="admin-button">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

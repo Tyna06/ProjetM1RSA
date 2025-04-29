@@ -5,13 +5,23 @@ app = Flask(__name__)
 # Liste simulée d'étudiants (base de données temporaire)
 etudiants = [
     {"id": 1, "nom": "Alice", "email": "alice@example.com"},
-    {"id": 2, "nom": "Bob", "email": "bob@example.com"}
+    {"id": 2, "nom": "Bob", "email": "bob@example.com"},
+    {"id": 101, "nom": "Ndeye", "email": "ndeye@example.com"}
 ]
 
 # GET : récupérer tous les étudiants
 @app.route("/etudiants", methods=["GET"])
 def get_etudiants():
     return jsonify(etudiants)
+
+# GET : récupérer un étudiant par son ID
+@app.route("/etudiants/<int:id>", methods=["GET"])
+def get_etudiant(id):
+    etudiant = next((e for e in etudiants if e["id"] == id), None)
+    if etudiant:
+        return jsonify(etudiant)
+    else:
+        return jsonify({"error": "Étudiant non trouvé"}), 404
 
 # POST : ajouter un nouvel étudiant
 @app.route("/etudiants", methods=["POST"])

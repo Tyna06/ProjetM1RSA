@@ -20,6 +20,8 @@ spec:
             - containerPort: 5001
 
 
+
+
 ---
 
 apiVersion: v1
@@ -32,6 +34,8 @@ spec:
   ports:
     - protocol: TCP
       port: 80
+
+
 
       targetPort: 5001
   type: NodePort

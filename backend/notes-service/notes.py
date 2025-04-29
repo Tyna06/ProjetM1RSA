@@ -1,9 +1,12 @@
 import requests
 from flask import Flask, jsonify, request
+import requests
 
 app = Flask(__name__)
 
+
 # Données simulées en mémoire
+
 notes = [
     {"id": 1, "etudiant_id": 101, "valeur": 15.5},
     {"id": 2, "etudiant_id": 102, "valeur": 12.0}
@@ -18,6 +21,7 @@ def get_notes():
 @app.route("/notes", methods=["POST"])
 def add_note():
     data = request.get_json()
+
     id_etudiant = data.get("etudiant_id")
     valeur = data.get("valeur")
 
@@ -38,6 +42,7 @@ def add_note():
     nouvelle_note = {
         "id": len(notes) + 1,
         "etudiant_id": id_etudiant,
+
         "valeur": valeur
     }
     notes.append(nouvelle_note)

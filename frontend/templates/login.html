@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Connexion</h2>
+        
+        <!-- Message d'erreur (à afficher conditionnellement avec Flask) -->
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="adressmail">Email Adresse :</label>
+                <input type="email" id="adressmail" name="adressmail" placeholder="Entrez votre adresse email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+            </div>
+
+            <div class="role-section">
+                <label>Choisissez votre rôle :</label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" id="admin" name="role" value="admin" required>
+                        Admin
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" id="student" name="role" value="student" required>
+                        Étudiant
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">Se connecter</button>
+        </form>
+        
+        <div class="signup-link">
+            <a href="{{ url_for('sign_in') }}">S'inscrire</a>
+        </div>
+    </div>
+</body>
+</html>

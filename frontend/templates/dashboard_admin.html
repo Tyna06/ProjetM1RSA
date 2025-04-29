@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | Gestion Étudiants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-graduation-cap"></i>
+                Gestion Scolaire
+            </h1>
+            <div class="admin-info">
+                <i class="far fa-calendar-alt"></i>
+                <div class="admin-date">{{ date_du_jour }}</div>
+            </div>
+        </div>
+
+        <!-- Section statistiques -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon blue">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ nombre_etudiants }}</div>
+                    <div class="admin-stat-label">Étudiants inscrits</div>
+                </div>
+            </div>
+            
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon green">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ nombre_evaluations }}</div>
+                    <div class="admin-stat-label">Évaluations</div>
+                </div>
+            </div>
+            
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon orange">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ moyenne_generale }}</div>
+                    <div class="admin-stat-label">Moyenne générale</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Cartes Principales -->
+        <div class="admin-actions">
+            <!-- Carte Gestion Étudiants -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h2>Gestion Étudiants</h2>
+                </div>
+                <div class="admin-card-content">
+                    <p>Inscription, modification et consultation des profils étudiants.</p>
+                    <div class="admin-card-buttons">
+                        <a href="{{ url_for('ajouter_etudiant') }}" class="admin-button">
+                            <i class="fas fa-user-plus"></i> Ajouter
+                        </a>
+                        <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
+                            <i class="fas fa-list"></i> Liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carte Gestion Notes -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <div class="admin-card-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h2>Gestion Notes</h2>
+                </div>
+                <div class="admin-card-content">
+                    <p>Ajout et modification des notes pour les étudiants.</p>
+                    <div class="admin-card-buttons">
+                        <a href="#" class="admin-button">
+                            <i class="fas fa-plus-circle"></i> Ajouter
+                        </a>
+                        <a href="#" class="admin-button outline">
+                            <i class="fas fa-edit"></i> Modifier
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

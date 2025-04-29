@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-user-plus"></i>
+                Ajouter un Étudiant
+            </h1>
+            <div class="admin-info">
+                <span class="admin-date">
+                    <i class="far fa-calendar-alt"></i>
+                    {{ date_aujourd_hui }}
+                </span>
+                <a href="{{ url_for('admin_dashboard') }}" class="admin-button outline">
+                    <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+        
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <div class="admin-card-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h2>Informations de l'étudiant</h2>
+            </div>
+            <div class="admin-card-content">
+                <p>Veuillez remplir tous les champs ci-dessous pour ajouter un nouvel étudiant à la base de données.</p>
+                
+                <form method="POST" class="admin-form">
+                    <div class="note-form-row">
+                        <div class="note-form-col">
+                            <div class="admin-form-group">
+                                <label for="nom">Nom :</label>
+                                <input type="text" id="nom" name="nom" placeholder="Nom de famille" required>
+                            </div>
+                        </div>
+                        <div class="note-form-col">
+                            <div class="admin-form-group">
+                                <label for="prenom">Prénom :</label>
+                                <input type="text" id="prenom" name="prenom" placeholder="Prénom" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-form-group">
+                        <label for="email">Email :</label>
+                        <input type="email" id="email" name="email" placeholder="exemple@email.com" required>
+                    </div>
+                    
+                    <div class="note-form-row">
+                        <div class="note-form-col">
+                            <div class="admin-form-group">
+                                <label for="age">Âge :</label>
+                                <input type="number" id="age" name="age" min="15" max="100" placeholder="Âge" required>
+                            </div>
+                        </div>
+                        <div class="note-form-col">
+                            <div class="admin-form-group">
+                                <label for="niveau">Niveau d'étude :</label>
+                                <div class="select-wrapper">
+                                    <select id="niveau" name="niveau" required>
+                                        <option value="">Sélectionnez un niveau</option>
+                                        <option value="Seconde">Seconde</option>
+                                        <option value="Première">Première</option>
+                                        <option value="Terminale">Terminale</option>
+                                        <option value="Licence 1">Licence 1</option>
+                                        <option value="Licence 2">Licence 2</option>
+                                        <option value="Licence 3">Licence 3</option>
+                                        <option value="Master 1">Master 1</option>
+                                        <option value="Master 2">Master 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-form-buttons">
+                        <button type="submit" class="admin-button">
+                            <i class="fas fa-save"></i> Enregistrer l'étudiant
+                        </button>
+                        <a href="{{ url_for('admin_dashboard') }}" class="admin-button outline">
+                            <i class="fas fa-times"></i> Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ajouter une validation simple côté client
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Veuillez entrer une adresse email valide.');
+            }
+        });
+    </script>
+</body>
+</html>

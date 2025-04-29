@@ -71,7 +71,7 @@
                             <i class="fas fa-user-plus"></i> Ajouter
                         </a>
                         <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
-                            <i class="fas fa-list"></i> Liste
+                            <i class="fas fa-list"></i> Liste_etudiants
                         </a>
                     </div>
                 </div>
@@ -88,11 +88,11 @@
                 <div class="admin-card-content">
                     <p>Ajout et modification des notes pour les étudiants.</p>
                     <div class="admin-card-buttons">
-                        <a href="#" class="admin-button">
+                        <a href="{{ url_for('ajouter_note') }}" class="admin-button">
                             <i class="fas fa-plus-circle"></i> Ajouter
                         </a>
-                        <a href="#" class="admin-button outline">
-                            <i class="fas fa-edit"></i> Modifier
+                        <a href="{{ url_for('liste_notes') }}" class="admin-button outline">
+                            <i class="fas fa-edit"></i> Voir les notes
                         </a>
                     </div>
                 </div>

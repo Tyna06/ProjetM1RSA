@@ -296,7 +296,7 @@ button:active {
     align-items: initial;
     justify-content: initial;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Layout du dashboard */
@@ -322,17 +322,18 @@ button:active {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin: 0;
 }
 
 .admin-title i {
-    color: #3498db;
+    color: #e74c3c;
     font-size: 24px;
 }
 
 .admin-info {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     font-size: 14px;
     color: #6c757d;
 }
@@ -379,24 +380,19 @@ button:active {
     font-size: 20px;
 }
 
-.admin-stat-icon.red {
+.admin-stat-icon.blue {
     background: rgba(231, 76, 60, 0.15);
     color: #e74c3c;
 }
 
-.admin-stat-icon.purple {
-    background: rgba(52, 152, 219, 0.15);
-    color: #3498db;
-}
-
-.admin-stat-icon.blue {
-    background: rgba(46, 204, 113, 0.15);
-    color: #2ecc71;
+.admin-stat-icon.green {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
 }
 
 .admin-stat-icon.orange {
-    background: rgba(243, 156, 18, 0.15);
-    color: #f39c12;
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
 }
 
 .admin-stat-info {
@@ -444,7 +440,7 @@ button:active {
     left: 0;
     right: 0;
     height: 5px;
-    background: linear-gradient(90deg, #3498db, #2980b9);
+    background: linear-gradient(90deg, #e74c3c, #ff7675);
 }
 
 .admin-card-header {
@@ -462,8 +458,8 @@ button:active {
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    background: rgba(52, 152, 219, 0.1);
-    color: #3498db;
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
 }
 
 .admin-card-content {
@@ -500,7 +496,7 @@ button:active {
     justify-content: center;
     gap: 8px;
     padding: 10px 20px;
-    background: #db3434;
+    background: #e74c3c;
     color: white;
     border-radius: 8px;
     text-decoration: none;
@@ -513,18 +509,18 @@ button:active {
 }
 
 .admin-button:hover {
-    background: #2980b9;
+    background: #c0392b;
     transform: translateY(-2px);
 }
 
 .admin-button.outline {
     background: transparent;
-    color: #3498db;
-    border: 1px solid #3498db;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
 }
 
 .admin-button.outline:hover {
-    background: rgba(52, 152, 219, 0.1);
+    background: rgba(231, 76, 60, 0.1);
 }
 
 /* Table pour lister les étudiants */
@@ -573,7 +569,7 @@ button:active {
 
 .admin-form h2 {
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #e74c3c;
     font-weight: 600;
     text-align: center;
 }
@@ -603,14 +599,15 @@ button:active {
 
 .admin-form input:focus,
 .admin-form select:focus {
-    border-color: #e03232;
-    box-shadow: 0 0 0 3px rgba(219, 52, 52, 0.2);
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
     outline: none;
 }
 
 .admin-form-buttons {
     display: flex;
     justify-content: space-between;
+    gap: 10px;
     margin-top: 20px;
 }
 
@@ -621,13 +618,18 @@ button:active {
 }
 
 .btn-edit {
-    background: #f39c12;
+    background: #e67e22;
     color: white;
     padding: 6px 10px;
     border-radius: 5px;
     text-decoration: none;
     font-size: 12px;
     transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-edit:hover {
@@ -642,6 +644,11 @@ button:active {
     text-decoration: none;
     font-size: 12px;
     transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-delete:hover {
@@ -656,6 +663,11 @@ button:active {
     text-decoration: none;
     font-size: 12px;
     transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-view:hover {
@@ -686,7 +698,12 @@ button:active {
         display: block;
         overflow-x: auto;
     }
+    
+    .admin-form-buttons {
+        flex-direction: column;
+    }
 }
+
 /* ========== STYLES POUR LA GESTION DES NOTES ========== */
 
 /* Formulaire pour ajouter/modifier des notes */
@@ -702,7 +719,7 @@ button:active {
 .note-form-title {
     text-align: center;
     margin-bottom: 25px;
-    color: #3498db;
+    color: #e74c3c;
     font-weight: 600;
     font-size: 24px;
 }
@@ -729,7 +746,9 @@ button:active {
 }
 
 .note-form select,
-.note-form input[type="number"] {
+.note-form input[type="number"],
+.note-form input[type="date"],
+.note-form input[type="text"] {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -739,10 +758,24 @@ button:active {
 }
 
 .note-form select:focus,
-.note-form input[type="number"]:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+.note-form input[type="number"]:focus,
+.note-form input[type="date"]:focus,
+.note-form input[type="text"]:focus,
+.note-form textarea:focus {
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
     outline: none;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    resize: vertical;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Table des notes */
@@ -794,7 +827,7 @@ button:active {
 }
 
 .notes-table .note-medium {
-    color: #f39c12;
+    color: #e67e22;
 }
 
 .notes-table .note-bad {
@@ -833,7 +866,7 @@ button:active {
 .note-stats-average {
     font-size: 24px;
     font-weight: 700;
-    color: #3498db;
+    color: #e74c3c;
 }
 
 .note-stats-grid {
@@ -897,15 +930,15 @@ button:active {
 }
 
 .notes-dashboard-icon.blue {
-    background-color: #3498db;
+    background-color: #e74c3c;
 }
 
 .notes-dashboard-icon.green {
-    background-color: #2ecc71;
+    background-color: #e74c3c;
 }
 
 .notes-dashboard-icon.orange {
-    background-color: #f39c12;
+    background-color: #e74c3c;
 }
 
 .notes-dashboard-icon.red {
@@ -943,10 +976,12 @@ button:active {
     display: flex;
     gap: 15px;
     align-items: flex-end;
+    flex-wrap: wrap;
 }
 
 .student-filter-group {
     flex: 1;
+    min-width: 200px;
 }
 
 .student-filter label {
@@ -968,17 +1003,18 @@ button:active {
 
 .student-filter-button {
     padding: 10px 20px;
-    background: #3498db;
+    background: #e74c3c;
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    min-width: 120px;
 }
 
 .student-filter-button:hover {
-    background: #2980b9;
+    background: #c0392b;
 }
 
 /* Responsive pour les formulaires de notes */
@@ -990,5 +1026,13 @@ button:active {
     
     .student-filter-form {
         flex-direction: column;
+    }
+    
+    .student-filter-group {
+        width: 100%;
+    }
+    
+    .student-filter-button {
+        width: 100%;
     }
 }

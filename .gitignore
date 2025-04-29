@@ -1,0 +1,9 @@
+**/.gradle/
+# Fichiers temporaires
+*.log
+*.tmp
+
+# Dossiers de build
+**/__pycache__/
+**/node_modules/
+.idea/

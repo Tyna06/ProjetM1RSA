@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: notes-container
-          image: tynaz02/notes-service:VersionNotes2
+          image: tynaz02/notes-service:Version2
           ports:
             - containerPort: 5000
 

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body"> <!-- on garde admin-body pour profiter du style existant -->
+    <div class="admin-dashboard">
+
+        <!-- En-tête de bienvenue -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-user-graduate"></i>
+                Bienvenue, {{ etudiant.prenom }} {{ etudiant.nom }}
+            </h1>
+            <div class="admin-info">
+                <span class="admin-date">
+                    <i class="far fa-calendar-alt"></i> {{ date_du_jour }}
+                </span>
+                <a href="{{ url_for('logout') }}" class="admin-button outline">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <!-- Cartes de résumé -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon blue">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ moyenne_generale|round(2) }}</div>
+                    <div class="admin-stat-label">Moyenne Générale</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon green">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ nombre_matieres }}</div>
+                    <div class="admin-stat-label">Matières</div>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon orange">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="admin-stat-info">
+                    <div class="admin-stat-value">{{ total_notes }}</div>
+                    <div class="admin-stat-label">Évaluations</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau des notes -->
+        <table class="notes-table">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Note</th>
+                    <th>Coefficient</th>
+                    <th>Date</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for note in notes %}
+                <tr>
+                    <td>{{ note.matiere }}</td>
+                    <td class="note-cell">
+                        <span class="note-badge {% if note.valeur >= 14 %}note-good{% elif note.valeur >= 10 %}note-medium{% else %}note-bad{% endif %}">
+                            {{ note.valeur|round(1) }}
+                        </span>
+                    </td>
+                    <td>{{ note.coefficient }}</td>
+                    <td>{{ note.date_evaluation }}</td>
+                    <td>{{ note.commentaire or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

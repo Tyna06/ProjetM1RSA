@@ -186,6 +186,54 @@ def admin_direct():
     session['role'] = 'admin'
     return redirect(url_for('admin_dashboard'))
 
+# ==== Accès rapide etudiant ====
+
+@app.route('/student-direct/<int:id>')
+def student_direct(id):
+    session['role'] = 'student'
+    session['student_id'] = id
+    return redirect(url_for('dashboard_etudiant', id=id))
+
+from datetime import datetime
+
+@app.route("/student/dashboard/<int:id>")
+def dashboard_etudiant(id):
+    if session.get('role') != 'student' or session.get('student_id') != id:
+        return redirect(url_for('login'))
+
+    etudiant = next((e for e in etudiants_list if e['id'] == id), None)
+    if not etudiant:
+        return "Étudiant introuvable", 404
+
+    notes = []
+    for matiere in matieres:
+        if matiere['id'] in etudiant['notes']:
+            notes.append({
+                'matiere': matiere['nom'],
+                'valeur': etudiant['notes'][matiere['id']],
+                'date_evaluation': "2025-04-01",  # exemple statique
+                'coefficient': 1,
+                'commentaire': ""
+            })
+
+    moyenne = etudiant['moyenne']
+    total_notes = len(notes)
+    matieres_unique = {note['matiere'] for note in notes}
+
+    return render_template("student/dashboard_etudiant.html",
+                           etudiant=etudiant,
+                           notes=notes,
+                           moyenne_generale=moyenne,
+                           total_notes=total_notes,
+                           nombre_matieres=len(matieres_unique),
+                           date_du_jour=datetime.now().strftime("%d/%m/%Y"))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+
 # ==== Lancement ====
 if __name__ == '__main__':
     app.run(debug=True)

@@ -4,12 +4,6 @@ from models.models import Etudiant, Note, Matiere
 
 app = Flask(__name__)
 
-# Liste simulée d'étudiants (base de données temporaire)
-# etudiants = [
-#     {"id": 1, "nom": "Alice", "email": "alice@example.com"},
-#     {"id": 2, "nom": "Bob", "email": "bob@example.com"}
-# ]
-
 # Connexion PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,6 +21,15 @@ def create_tables():
 def get_etudiants():
     etudiants = Etudiant.query.all()
     return jsonify([{"id": e.id, "nom": e.nom, "email": e.email} for e in etudiants])
+
+# GET : récupérer un étudiant par son ID
+@app.route("/etudiants/<int:id>", methods=["GET"])
+def get_etudiant(id):
+    etudiant = next((e for e in etudiants if e["id"] == id), None)
+    if etudiant:
+        return jsonify(etudiant)
+    else:
+        return jsonify({"error": "Étudiant non trouvé"}), 404
 
 # POST : ajouter un nouvel étudiant
 @app.route("/etudiants", methods=["POST"])

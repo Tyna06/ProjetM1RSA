@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from models import db
-from models.models import Etudiant, Note, Matiere
+from models.models import Etudiant
 
 app = Flask(__name__)
 
@@ -16,20 +16,34 @@ def create_tables():
     return "✅ Base de données initialisée !"
 
     
+
+# Connexion d'un etudiant
+@app.route("/login", methods=["POST"])
+def login_etudiant():
+    data = request.get_json()
+    email = data.get("email")
+    password = data.get("password")
+
+    etudiant = Etudiant.query.filter_by(email=email).first()
+
+    if not etudiant:
+        return jsonify({"error": "Email non trouvé"}), 404
+
+    if etudiant.password != password:
+        return jsonify({"error": "Mot de passe incorrect"}), 401
+
+    return jsonify({
+        "id": etudiant.id,
+        "nom": etudiant.nom,
+        "prenom": etudiant.prenom,
+        "email": etudiant.email
+    }), 200
+
 # GET : récupérer tous les étudiants
 @app.route("/etudiants", methods=["GET"])
 def get_etudiants():
     etudiants = Etudiant.query.all()
     return jsonify([{"id": e.id, "nom": e.nom, "email": e.email} for e in etudiants])
-
-# GET : récupérer un étudiant par son ID
-@app.route("/etudiants/<int:id>", methods=["GET"])
-def get_etudiant(id):
-    etudiant = next((e for e in etudiants if e["id"] == id), None)
-    if etudiant:
-        return jsonify(etudiant)
-    else:
-        return jsonify({"error": "Étudiant non trouvé"}), 404
 
 # POST : ajouter un nouvel étudiant
 @app.route("/etudiants", methods=["POST"])
@@ -38,8 +52,9 @@ def add_etudiant():
     try:
         nouvel_etudiant = Etudiant(
             nom=data.get("nom"),
+            prenom=data.get("prenom"),
             email=data.get("email"),
-            mot_de_passe=data.get("mot_de_passe"),
+            password=data.get("password"),
             age=data.get("age"),
             niveau=data.get("niveau")
         )
@@ -56,15 +71,29 @@ def add_etudiant():
 def get_etudiant(id_etudiant):
     etudiant = Etudiant.query.get(id_etudiant)
     if etudiant:
+        notes_data = [
+            {
+                "matiere_id": note.matiere_id,
+                "valeur": note.valeur,
+                "coefficient": note.coefficient,
+                "date_evaluation": note.date_evaluation.isoformat(),
+                "commentaire": note.commentaire or ""
+            }
+            for note in etudiant.notes
+        ]
+
         return jsonify({
             "id": etudiant.id,
             "nom": etudiant.nom,
+            "prenom": etudiant.prenom,
             "email": etudiant.email,
             "age": etudiant.age,
-            "niveau": etudiant.niveau
+            "niveau": etudiant.niveau,
+            "notes": notes_data  # ✅ ici la liste des notes
         })
     else:
         return jsonify({"error": "Étudiant non trouvé"}), 404
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

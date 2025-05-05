@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-
+import requests
 app = Flask(__name__)
 app.secret_key = 'secret_key'
 
@@ -21,28 +21,83 @@ niveaux = ['L1', 'L2', 'L3']
 def index():
     return redirect(url_for('login'))
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None
     if request.method == 'POST':
+        email = request.form.get('adressmail')  # nom du champ dans le HTML
+        password = request.form.get('password')
         role = request.form.get('role')
-        session['username'] = request.form.get('username')
-        session['role'] = role
+
         if role == 'admin':
-            return redirect(url_for('admin_dashboard'))
+            if email == "admin@admin.com" and password == "admin":
+                session['username'] = email
+                session['role'] = role
+                return redirect(url_for('admin_dashboard'))
+            else:
+                error = "Admin incorrect"
+
         elif role == 'student':
-            return redirect(url_for('student_dashboard'))
-    return render_template('auth/login.html')
+            try:
+                r = requests.post("http://localhost:5001/login", json={"email": email, "password": password})
+                if r.status_code == 200:
+                    data = r.json()
+                    session['username'] = email
+                    session['role'] = role
+                    session['student_id'] = data['id']
+                    session['student_nom'] = data.get('nom')
+                    session['student_prenom'] = data.get('prenom')
+                    session['student_email'] = data.get('email')
+                    session['student_age'] = data.get('age')
+                    session['student_niveau'] = data.get('niveau')
+                    return redirect(url_for('dashboard_etudiant', id=data['id']))
+                elif r.status_code == 404:
+                    error = "Email introuvable"
+                elif r.status_code == 401:
+                    error = "Mot de passe incorrect"
+                else:
+                    error = "Erreur lors de la connexion"
+            except Exception as e:
+                error = f"Erreur connexion microservice : {e}"
+
+    return render_template('auth/login.html', error=error)
+
 
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
+    error = None
     if request.method == 'POST':
-        # Simule création
         nom = request.form.get('nom')
         prenom = request.form.get('prenom')
+        age = request.form.get('age')
+        niveau = request.form.get('niveau')
         email = request.form.get('email')
-        print(f"Nouvel utilisateur : {nom} {prenom} ({email})")
-        return redirect(url_for('login'))
-    return render_template('auth/sign_in.html')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if password != confirm_password:
+            error = "Les mots de passe ne correspondent pas."
+        else:
+            try:
+                # Appel microservice
+                response = requests.post("http://localhost:5001/etudiants", json={
+                    "nom": nom,
+                    "prenom": prenom,
+                    "age": age,
+                    "niveau": niveau,
+                    "email": email,
+                    "password": password
+                })
+
+                if response.status_code == 201:
+                    return redirect(url_for('login'))
+                else:
+                    error = response.json().get("erreur", "Erreur lors de l'inscription.")
+            except Exception as e:
+                error = f"Erreur de connexion au microservice : {e}"
+
+    return render_template('auth/sign_in.html', error=error)
 
 # ==== Dashboards ====
 @app.route('/admin')
@@ -201,22 +256,31 @@ def dashboard_etudiant(id):
     if session.get('role') != 'student' or session.get('student_id') != id:
         return redirect(url_for('login'))
 
-    etudiant = next((e for e in etudiants_list if e['id'] == id), None)
+    try:
+        r = requests.get(f"http://localhost:5001/etudiants/{id}")
+        if r.status_code == 200:
+            etudiant = r.json()
+            etudiant['prenom'] = session.get('student_prenom', '')
+        else:
+            return "Étudiant introuvable", 404
+    except Exception as e:
+        return f"Erreur connexion microservice : {e}", 500
+
     if not etudiant:
         return "Étudiant introuvable", 404
 
     notes = []
-    for matiere in matieres:
-        if matiere['id'] in etudiant['notes']:
-            notes.append({
-                'matiere': matiere['nom'],
-                'valeur': etudiant['notes'][matiere['id']],
-                'date_evaluation': "2025-04-01",  # exemple statique
-                'coefficient': 1,
-                'commentaire': ""
-            })
+    for note in etudiant['notes']:
+        matiere_nom = next((m['nom'] for m in matieres if m['id'] == note['matiere_id']), 'Inconnue')
+        notes.append({
+            'matiere': matiere_nom,
+            'valeur': note['valeur'],
+            'date_evaluation': note.get('date_evaluation', ''),
+            'coefficient': note.get('coefficient', 1),
+            'commentaire': note.get('commentaire', '')
+        })
 
-    moyenne = etudiant['moyenne']
+    moyenne = round(sum(n['valeur'] for n in notes) / len(notes), 2) if notes else 0
     total_notes = len(notes)
     matieres_unique = {note['matiere'] for note in notes}
 

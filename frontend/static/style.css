@@ -652,7 +652,7 @@ button:active {
     box-sizing: border-box;
     margin: 0;
     
-
+}
 .btn-delete:hover {
     background: #c0392b;
 }

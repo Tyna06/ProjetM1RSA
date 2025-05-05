@@ -649,7 +649,9 @@ button:active {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-}
+    box-sizing: border-box;
+    margin: 0;
+    
 
 .btn-delete:hover {
     background: #c0392b;
@@ -817,19 +819,48 @@ textarea {
     color: #2c3e50;
 }
 
-.notes-table .note-value {
-    font-weight: 600;
+
+.notes-table .note-cell {
     text-align: center;
 }
 
+.notes-table .note-badge {
+    font-weight: 600;
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    min-width: 40px;
+    text-align: center;
+}
+.notes-table .note-value {
+    font-weight: 600;
+    text-align: center;
+    display: inline-block; /* Ajouté pour uniformiser l'affichage */
+    width: 100%; /* Utilise toute la largeur de la cellule */
+    padding: 4px 0; /* Espacement vertical uniforme */
+    
+}
+/* Ajouter un style pour la cellule contenant la note */
+.notes-table td:nth-child(2) {
+    text-align: center; /* Centre le contenu de la cellule */
+    width: 60px; /* Largeur fixe pour toutes les cellules de notes */
+}
+
 .notes-table .note-good {
+    background-color: rgba(46, 204, 113, 0.15);
     color: #2ecc71;
 }
 
 .notes-table .note-medium {
-    color: #e67e22;
+
+    background-color: rgba(230, 126, 34, 0.15);
+
 }
 
+.notes-table .note-bad {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+}
 .notes-table .note-bad {
     color: #e74c3c;
 }

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <div class="admin-dashboard">
+
+        <!-- En-tête -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-user-graduate"></i> Bonjour {{ etudiant.prenom }} !
+            </h1>
+            <div class="admin-info">
+                <a href="{{ url_for('logout') }}" class="admin-button outline">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <!-- Infos personnelles -->
+        <div class="admin-form">
+            <h2>Mes Informations</h2>
+            <p><strong>Nom :</strong> {{ etudiant.nom }}</p>
+            <p><strong>Prénom :</strong> {{ etudiant.prenom }}</p>
+            <p><strong>Email :</strong> {{ etudiant.email }}</p>
+            <p><strong>Âge :</strong> {{ etudiant.age }} ans</p>
+            <p><strong>Niveau :</strong> {{ etudiant.niveau }}</p>
+        </div>
+
+        <!-- Notes -->
+        <div class="note-stats-card" style="margin-top: 30px;">
+            <div class="note-stats-header">
+                <div class="note-stats-title">Mes Notes</div>
+                <div class="note-stats-average">Moyenne : {{ moyenne_generale|round(2) }}</div>
+            </div>
+
+            <table class="notes-table">
+                <thead>
+                    <tr>
+                        <th>Matière</th>
+                        <th>Note</th>
+                        <th>Date</th>
+                        <th>Coefficient</th>
+                        <th>Commentaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for note in notes %}
+                    <tr>
+                        <td>{{ note.matiere }}</td>
+                        <td class="note-value {% if note.valeur >= 14 %}note-good{% elif note.valeur >= 10 %}note-medium{% else %}note-bad{% endif %}">
+                            {{ note.valeur|round(1) }}
+                        </td>
+                        <td>{{ note.date_evaluation }}</td>
+                        <td>{{ note.coefficient }}</td>
+                        <td>{{ note.commentaire or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

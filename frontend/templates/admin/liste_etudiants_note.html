@@ -120,7 +120,7 @@
             
                     {% for matiere in matieres_affichees %}
                         {% set note = etudiant.notes.get(matiere.id) %}
-                        <td class="note-value 
+                        <td class="note-value-etd 
                             {% if note is not none %}
                                 {% if note >= 14 %}note-good
                                 {% elif note >= 10 %}note-medium
@@ -136,7 +136,7 @@
                         </td>
                     {% endfor %}
             
-                    <td class="note-value average 
+                    <td class="note-value-etd average 
                         {% if etudiant.moyenne >= 14 %}note-good
                         {% elif etudiant.moyenne >= 10 %}note-medium
                         {% else %}note-bad

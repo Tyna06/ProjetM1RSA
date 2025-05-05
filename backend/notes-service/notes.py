@@ -7,7 +7,6 @@ from models.models import Note, Matiere
 
 app = Flask(__name__)
 
-
 # Connexion à la même base PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -5,11 +5,11 @@ class Etudiant(db.Model):
     __tablename__ = "etudiants"
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(64), nullable=False)
+    prenom = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    mot_de_passe = db.Column(db.String(128), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     age = db.Column(db.Integer)
     niveau = db.Column(db.String(32))
-
     notes = db.relationship("Note", backref="etudiant", lazy=True)
 
 class Matiere(db.Model):

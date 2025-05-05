@@ -652,7 +652,6 @@ button:active {
     box-sizing: border-box;
     margin: 0;
     
-}
 
 .btn-delete:hover {
     background: #c0392b;
@@ -853,8 +852,9 @@ textarea {
 }
 
 .notes-table .note-medium {
+
     background-color: rgba(230, 126, 34, 0.15);
-    color: #e67e22;
+
 }
 
 .notes-table .note-bad {

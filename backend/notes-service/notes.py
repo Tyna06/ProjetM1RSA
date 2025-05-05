@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, jsonify, request
 import requests
 from models import db
@@ -5,6 +6,7 @@ from models.models import Note, Matiere
 
 
 app = Flask(__name__)
+
 
 # Connexion à la même base PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
@@ -31,6 +33,7 @@ def ajouter_matiere():
     except Exception as e:
         db.session.rollback()
         return jsonify({"erreur": str(e)}), 400
+
 
 # GET : récupérer toutes les notes
 @app.route("/notes", methods=["GET"])
@@ -69,6 +72,7 @@ def add_note():
     db.session.add(note)
     db.session.commit()
     return jsonify({"message": "Note ajoutée", "id": note.id}), 201
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

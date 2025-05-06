@@ -1,5 +1,8 @@
 from . import db
 from datetime import date
+from sqlalchemy import Enum
+
+niveau_enum = Enum('L1', 'L2', 'L3', 'M1', 'M2', 'Doctorat', name='niveau_enum', create_type=False)
 
 class Etudiant(db.Model):
     __tablename__ = "etudiants"
@@ -9,9 +12,26 @@ class Etudiant(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(128), nullable=False)
     age = db.Column(db.Integer)
-    niveau = db.Column(db.String(32))
+    niveau = db.Column(niveau_enum)
 
     notes = db.relationship("Note", backref="etudiant", lazy=True)
+    def normalize_niveau(self):
+        if self.niveau:
+            self.niveau = self.niveau.strip().lower()
+            mapping = {
+                'l1': 'L1',
+                'l2': 'L2',
+                'l3': 'L3',
+                'master1': 'M1',
+                'm1': 'M1',
+                'master 1': 'M1',
+                'master2': 'M2',
+                'm2': 'M2',
+                'master 2': 'M2',
+                'doctorat': 'Doctorat',
+                'phd': 'Doctorat'
+            }
+            self.niveau = mapping.get(self.niveau, self.niveau.upper())
 
 class Matiere(db.Model):
     __tablename__ = "matieres"
@@ -29,3 +49,4 @@ class Note(db.Model):
     date_evaluation = db.Column(db.Date, default=date.today)
     coefficient = db.Column(db.Integer)
     commentaire = db.Column(db.String(255))
+

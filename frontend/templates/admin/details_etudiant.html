@@ -17,35 +17,30 @@
                 <a href="{{ url_for('liste_etudiants') }}" class="admin-button outline">
                     <i class="fas fa-arrow-left"></i> Retour
                 </a>
+                <a href="{{ url_for('modifier_etudiant', id=etudiant.id) }}" class="admin-button">
+                    <i class="fas fa-edit"></i> Modifier
+                </a>
+
             </div>
         </div>
 
-        <!-- Informations de l'étudiant -->
         <div class="admin-form">
             <h2>Informations Générales</h2>
-            <p><strong>Nom :</strong> Dupont</p>
-            <p><strong>Prénom :</strong> Alice</p>
-            <p><strong>Email :</strong> alice.dupont@example.com</p>
-            <p><strong>Âge :</strong> 21 ans</p>
-            <p><strong>Niveau :</strong> Licence 3</p>
-
-            <div class="admin-form-buttons" style="margin-top: 20px;">
-                <a href="#" class="admin-button">
-                    <i class="fas fa-edit"></i> Modifier
-                </a>
-                <a href="#" class="admin-button outline">
-                    <i class="fas fa-trash"></i> Supprimer
-                </a>
-            </div>
+            <p><strong>Nom :</strong> {{ etudiant.nom }}</p>
+            <p><strong>Prénom :</strong> {{ etudiant.prenom }}</p>
+            <p><strong>Email :</strong> {{ etudiant.email }}</p>
+            <p><strong>Âge :</strong> {{ etudiant.age }} ans</p>
+            <p><strong>Niveau :</strong> {{ etudiant.niveau }}</p>
         </div>
 
         <!-- Notes de l'étudiant -->
         <div class="note-stats-card" style="margin-top: 30px;">
             <div class="note-stats-header">
                 <div class="note-stats-title">Notes de l'Étudiant</div>
-                <div class="note-stats-average">Moyenne : 14.2</div>
+                <div class="note-stats-average">Moyenne : {{ etudiant.moyenne or "N/A" }}</div>
             </div>
 
+            {% if etudiant.notes %}
             <table class="notes-table">
                 <thead>
                     <tr>
@@ -53,29 +48,27 @@
                         <th>Note</th>
                         <th>Date</th>
                         <th>Coefficient</th>
+                        <th>Commentaire</th>
+
                     </tr>
                 </thead>
                 <tbody>
+                    {% for note in etudiant.notes %}
                     <tr>
-                        <td>Mathématiques</td>
-                        <td class="note-good">16</td>
-                        <td>2025-03-15</td>
-                        <td>2</td>
+                        <td>{{ note.matiere_nom or note.matiere_id }}</td>
+                        <td class="{% if note.valeur >= 14 %}note-good{% elif note.valeur >= 10 %}note-medium{% else %}note-bad{% endif %}">
+                            {{ note.valeur }}
+                        </td>
+                        <td>{{ note.date_evaluation.strftime("%d/%m/%Y") if note.date_evaluation else "" }}</td>
+                        <td>{{ note.coefficient }}</td>
+                        <td>{{ note.commentaire or "-" }}</td>
                     </tr>
-                    <tr>
-                        <td>Physique</td>
-                        <td class="note-medium">12.5</td>
-                        <td>2025-03-20</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>Chimie</td>
-                        <td class="note-good">14</td>
-                        <td>2025-04-10</td>
-                        <td>3</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <p>Aucune note disponible pour cet étudiant.</p>
+            {% endif %}
         </div>
     </div>
 </body>

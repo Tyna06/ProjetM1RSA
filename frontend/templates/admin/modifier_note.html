@@ -24,10 +24,15 @@
 
         <div class="note-form">
             <h2 class="note-form-title">Modifier la note de {{ note.etudiant.nom }} {{ note.etudiant.prenom }}</h2>
-            
+            {% if error %}
+                <div class="error-message" style="color: red; margin-bottom: 10px;">
+                    {{ error }}
+                </div>
+            {% endif %}
+
             <form method="POST">
                 <div class="note-form-group">
-                    <label>Étudiant :</label>
+                    <label> Étudiant :</label>
                     <input type="text" value="{{ note.etudiant.nom }} {{ note.etudiant.prenom }}" readonly 
                            style="background-color: #f8f9fa; width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
                     <input type="hidden" name="etudiant_id" value="{{ note.etudiant.id }}">
@@ -75,7 +80,13 @@
                     <a href="{{ url_for('liste_notes') }}" class="admin-button outline">
                         <i class="fas fa-times"></i> Annuler
                     </a>
+                    
                 </div>
+            </form>
+            <form method="POST" action="{{ url_for('supprimer_note', id=note.id) }}" onsubmit="return confirm('Confirmer la suppression ?');" style="margin-top: 10px;">
+                <button type="submit" class="admin-button danger">
+                    <i class="fas fa-trash"></i> Supprimer la note
+                </button>
             </form>
         </div>
     </div>

@@ -119,28 +119,24 @@
                     <td>{{ etudiant.niveau }}</td>
             
                     {% for matiere in matieres_affichees %}
-                        {% set note = etudiant.notes.get(matiere.id) %}
-
-                        <td class="note-value-etd 
-
-                            {% if note is not none %}
-                                {% if note >= 14 %}note-good
-                                {% elif note >= 10 %}note-medium
-                                {% else %}note-bad
-                                {% endif %}
+                    {% set note = etudiant.notes_dict.get(matiere.id) %}
+                    <td class="note-value-etd 
+                        {% if note is not none %}
+                            {% if note >= 14 %}note-good
+                            {% elif note >= 10 %}note-medium
+                            {% else %}note-bad
                             {% endif %}
-                        ">
-                            {% if note is not none %}
-                                {{ note|round(1) }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        {% endif %}
+                    ">
+                        {% if note is not none %}
+                            {{ note|round(1) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     {% endfor %}
             
-
                     <td class="note-value-etd average 
-
                         {% if etudiant.moyenne >= 14 %}note-good
                         {% elif etudiant.moyenne >= 10 %}note-medium
                         {% else %}note-bad
@@ -159,7 +155,8 @@
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>            
+            </tbody>
+                   
             
         </table>
     </div>

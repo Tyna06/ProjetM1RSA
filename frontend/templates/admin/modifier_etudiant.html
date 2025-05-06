@@ -47,7 +47,7 @@
                 <div class="admin-form-group">
                     <label for="niveau">Niveau :</label>
                     <select id="niveau" name="niveau" required>
-                        {% for n in ['L1', 'L2', 'L3'] %}
+                        {% for n in ['L1', 'L2', 'L3','M1','M2','Doctorat'] %}
                         <option value="{{ n }}" {% if etudiant.niveau == n %}selected{% endif %}>{{ n }}</option>
                         {% endfor %}
                     </select>

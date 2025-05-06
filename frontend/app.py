@@ -1,20 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import datetime
 import requests
+
+
 app = Flask(__name__)
 app.secret_key = 'secret_key'
 
-# ==== Données simulées ====
-etudiants_list = [
-    {'id': 1, 'nom': 'Dupont', 'prenom': 'Jean', 'email': 'jean@exemple.com', 'age': 20, 'niveau': 'L1', 'notes': {1: 14.5, 2: 12}, 'moyenne': 13.25},
-    {'id': 2, 'nom': 'Durand', 'prenom': 'Marie', 'email': 'marie@exemple.com', 'age': 22, 'niveau': 'L2', 'notes': {1: 9, 2: 11}, 'moyenne': 10.0},
-]
+
+
 
 matieres = [
     {'id': 1, 'nom': 'Mathématiques'},
     {'id': 2, 'nom': 'Physique'}
 ]
 
-niveaux = ['L1', 'L2', 'L3']
 
 # ==== Auth Routes ====
 @app.route('/')
@@ -103,143 +102,324 @@ def sign_in():
 @app.route('/admin')
 def admin_dashboard():
     if session.get('role') == 'admin':
-        return render_template('admin/dashboard_admin.html', 
-                               nombre_etudiants=len(etudiants_list),
-                               moyenne_generale=12.0, 
-                               nombre_evaluations=5)
+        try:
+            r = requests.get("http://localhost:5001/etudiants")
+            if r.status_code == 200:
+                etudiants = r.json()
+                nombre_etudiants = len(etudiants)
+            else:
+                etudiants = []
+                nombre_etudiants = 0
+        except Exception as e:
+            etudiants = []
+            nombre_etudiants = 0
+
+        # Calcul dynamique des statistiques
+        total_notes = 0
+        total_valeurs = 0
+
+        for etudiant in etudiants:
+            notes = etudiant.get('notes', [])
+            valeurs = [note['valeur'] for note in notes]
+            total_notes += len(valeurs)
+            total_valeurs += sum(valeurs)
+
+        moyenne_generale = round(total_valeurs / total_notes, 2) if total_notes > 0 else 0.0
+        date_du_jour = datetime.now().strftime("%d/%m/%Y")
+
+        return render_template('admin/dashboard_admin.html',
+                               nombre_etudiants=nombre_etudiants,
+                               moyenne_generale=moyenne_generale,
+                               nombre_evaluations=total_notes,
+                               date_du_jour=date_du_jour)
+
     return redirect(url_for('login'))
 
-@app.route('/student')
-def student_dashboard():
-    if session.get('role') == 'student':
-        return render_template('admin/dashboard_student.html')
-    return redirect(url_for('login'))
+
+
+
 
 # ==== Étudiants ====
+
 @app.route('/etudiant/ajouter', methods=['GET', 'POST'])
 def ajouter_etudiant():
     if request.method == 'POST':
-        new_id = len(etudiants_list) + 1
-        etudiant = {
-            'id': new_id,
+        etudiant_data = {
             'nom': request.form.get('nom'),
             'prenom': request.form.get('prenom'),
             'email': request.form.get('email'),
             'age': request.form.get('age'),
             'niveau': request.form.get('niveau'),
-            'notes': {},
-            'moyenne': 0.0
+            'password': request.form.get('password')
+
         }
-        etudiants_list.append(etudiant)
-        return redirect(url_for('liste_etudiants'))
+
+        try:
+            r = requests.post('http://localhost:5001/etudiants', json=etudiant_data)
+            if r.status_code == 201:
+                return redirect(url_for('liste_etudiants'))
+            else:
+                error = f"Erreur: {r.json().get('erreur', 'Inconnue')}"
+        except Exception as e:
+            error = f"Erreur de connexion au microservice : {e}"
+
+        return render_template('admin/ajouter_etudiant.html', error=error)
+
     return render_template('admin/ajouter_etudiant.html')
+
+# Lister les etudiants 
 
 @app.route('/etudiant/liste')
 def liste_etudiants():
-    return render_template('admin/liste_etudiants.html', etudiants=etudiants_list)
+    try:
+        r = requests.get("http://localhost:5001/etudiants")
+        if r.status_code == 200:
+            etudiants = r.json()
+        else:
+            etudiants = []
+            error = f"Erreur: {r.status_code}"
+    except Exception as e:
+        etudiants = []
+        error = f"Erreur connexion microservice : {e}"
+
+    return render_template('admin/liste_etudiants.html', etudiants=etudiants)
+
+
+# Détail d'un etudiant spécifique
 
 @app.route('/etudiant/<int:id>')
 def details_etudiant(id):
-    # Simule la récupération d'un étudiant
-    etudiant = {
-        'id': id,
-        'nom': 'Dupont',
-        'prenom': 'Alice',
-        'email': 'alice.dupont@example.com',
-        'age': 21,
-        'niveau': 'Licence 3',
-        'moyenne': 14.2,
-        'notes': [
-            {'matiere': 'Mathématiques', 'note': 16, 'date': '2025-03-15', 'coefficient': 2},
-            {'matiere': 'Physique', 'note': 12.5, 'date': '2025-03-20', 'coefficient': 1},
-            {'matiere': 'Chimie', 'note': 14, 'date': '2025-04-10', 'coefficient': 3},
-        ]
-    }
+    try:
+        r = requests.get(f"http://localhost:5001/etudiants/{id}")
+        if r.status_code == 200:
+            etudiant = r.json()
+        else:
+            return "Étudiant non trouvé", 404
+    except Exception as e:
+        return f"Erreur lors de la connexion au microservice : {e}", 500
+
+    try:
+        r = requests.get("http://localhost:5000/matieres")
+        matieres = r.json() if r.status_code == 200 else []
+        print(" Matières récupérées :", matieres)
+    except:
+        matieres = []
+
+    # Remplacer les IDs des matières par leur nom
+    for note in etudiant.get("notes", []):
+        matiere_nom = next((m['nom'] for m in matieres if m['id'] == note['matiere_id']), "Inconnue")
+        note['matiere_nom'] = matiere_nom
+
+        # Conversion de la date_evaluation en datetime si c'est une chaîne
+        if isinstance(note.get('date_evaluation'), str):
+            note['date_evaluation'] = datetime.strptime(note['date_evaluation'], "%Y-%m-%d").date()
+
+    # Calcul de la moyenne (optionnel ici si le microservice ne la fournit pas)
+    if etudiant.get("notes"):
+        total = sum(n['valeur'] * n['coefficient'] for n in etudiant['notes'])
+        coef_total = sum(n['coefficient'] for n in etudiant['notes'])
+        etudiant['moyenne'] = round(total / coef_total, 2) if coef_total > 0 else None
+    else:
+        etudiant['moyenne'] = None
+
     return render_template('admin/details_etudiant.html', etudiant=etudiant)
-@app.route('/etudiant/modifier/<int:id>', methods=['GET', 'POST'])
-def modifier_etudiant(id):
-    etudiant = next((e for e in etudiants_list if e['id'] == id), None)
-    if not etudiant:
-        return "Étudiant introuvable", 404
 
-    if request.method == 'POST':
-        etudiant['nom'] = request.form.get('nom')
-        etudiant['prenom'] = request.form.get('prenom')
-        etudiant['email'] = request.form.get('email')
-        etudiant['age'] = request.form.get('age')
-        etudiant['niveau'] = request.form.get('niveau')
-        return redirect(url_for('liste_etudiants'))
 
-    return render_template('admin/modifier_etudiant.html', etudiant=etudiant)
+
+
+
+
+
+# Supprimer un etudiant 
 @app.route('/etudiant/supprimer/<int:id>', methods=['POST'])
 def supprimer_etudiant(id):
-    global etudiants_list
-    etudiants_list = [e for e in etudiants_list if e['id'] != id]
-    return redirect(url_for('liste_etudiants'))
+    try:
+        r = requests.delete(f"http://localhost:5001/etudiants/{id}")
+        if r.status_code == 200:
+            return redirect(url_for('liste_etudiants'))
+        else:
+            return f"Erreur : {r.status_code}", 400
+    except Exception as e:
+        return f"Erreur de connexion au microservice : {e}", 500
+
+# Modifier etudiant 
+@app.route('/etudiant/modifier/<int:id>', methods=['GET', 'POST'])
+def modifier_etudiant(id):
+    try:
+        r = requests.get(f"http://localhost:5001/etudiants/{id}")
+        if r.status_code != 200:
+            return "Étudiant introuvable", 404
+        etudiant = r.json()
+    except Exception as e:
+        return f"Erreur de récupération : {e}", 500
+
+    if request.method == 'POST':
+        updated_data = {
+            'nom': request.form.get('nom'),
+            'prenom': request.form.get('prenom'),
+            'email': request.form.get('email'),
+            'age': request.form.get('age'),
+            'niveau': request.form.get('niveau'),
+            'password': request.form.get('password')  # si tu veux permettre la modif
+        }
+        try:
+            r = requests.put(f"http://localhost:5001/etudiants/{id}", json=updated_data)
+            if r.status_code == 200:
+                return redirect(url_for('liste_etudiants'))
+            else:
+                error = r.json().get("erreur", "Erreur lors de la mise à jour.")
+        except Exception as e:
+            error = f"Erreur de connexion : {e}"
+        return render_template('admin/modifier_etudiant.html', etudiant=etudiant, error=error)
+
+    return render_template('admin/modifier_etudiant.html', etudiant=etudiant)
 
 # ==== Notes ====
+# Update un etudiant info
+@app.route('/notes/modifier/<int:id>', methods=['GET', 'POST'])
+def modifier_note(id):
+    error = None
+
+    if request.method == 'POST':
+        data = {
+            "etudiant_id": int(request.form.get('etudiant_id')),
+            "matiere_id": int(request.form.get('matiere_id')),
+            "valeur": float(request.form.get('note')),
+            "date_evaluation": request.form.get('date_evaluation'),
+            "coefficient": int(request.form.get('coefficient')),
+            "commentaire": request.form.get('commentaire')
+        }
+
+        try:
+            r = requests.put(f"http://localhost:5000/notes/{id}", json=data)
+            if r.status_code == 200:
+                return redirect(url_for('liste_etudiants_notes'))
+            else:
+                error = f"Erreur : {r.status_code}"
+        except Exception as e:
+            error = f"Erreur de connexion au microservice : {e}"
+
+    # GET : afficher la note à modifier
+    try:
+        r_note = requests.get(f"http://localhost:5000/notes/{id}")
+        r_matieres = requests.get("http://localhost:5000/matieres")
+        if r_note.status_code == 200 and r_matieres.status_code == 200:
+            note = r_note.json()
+            matieres_list = r_matieres.json()
+            return render_template("admin/modifier_note.html", note=note, matieres=matieres_list, error=error)
+        else:
+            return "Note introuvable", 404
+    except Exception as e:
+        return f"Erreur de récupération : {e}", 500
+
+# DELETE notes
+@app.route('/notes/supprimer/<int:id>', methods=['POST'])
+def supprimer_note(id):
+    try:
+        r = requests.delete(f"http://localhost:5000/notes/{id}")
+        if r.status_code == 200:
+            return redirect(url_for('liste_etudiants_notes'))
+        else:
+            return f"Erreur : {r.status_code}", 400
+    except Exception as e:
+        return f"Erreur de suppression : {e}", 500
+
+
+
 @app.route('/notes')
 def liste_notes():
-    search_name = request.args.get('search_name', '')
-    matiere_id = request.args.get('matiere_id')
-    niveau_filtre = request.args.get('niveau')
+    try:
+        r = requests.get("http://localhost:5001/etudiants")
+        etudiants = r.json() if r.status_code == 200 else []
+    except Exception as e:
+        etudiants = []
 
-    # Filtrage simple (optionnel pour après)
-    filtered_etudiants = etudiants_list
-    if search_name:
-        filtered_etudiants = [e for e in filtered_etudiants if search_name.lower() in (e['nom'] + e['prenom']).lower()]
-    if matiere_id:
-        matiere_id = int(matiere_id)
-        filtered_etudiants = [e for e in filtered_etudiants if matiere_id in e['notes']]
-    if niveau_filtre:
-        filtered_etudiants = [e for e in filtered_etudiants if e['niveau'] == niveau_filtre]
+    total_notes = 0
+    total_valeurs = 0
 
-    return render_template('admin/liste_etudiants_note.html', 
-                           etudiants=filtered_etudiants, 
-                           matieres=matieres, 
-                           niveaux=niveaux, 
-                           matieres_affichees=matieres, 
-                           nombre_etudiants=len(filtered_etudiants), 
-                           moyenne_generale=round(sum(e['moyenne'] for e in filtered_etudiants) / len(filtered_etudiants), 2) if filtered_etudiants else 0,
-                           nombre_evaluations=sum(len(e['notes']) for e in filtered_etudiants),
-                           search_name=search_name,
-                           matiere_id=matiere_id,
-                           niveau_filtre=niveau_filtre)
+    for etudiant in etudiants:
+        notes = etudiant.get('notes', [])
+        # Extraire les valeurs des notes
+        valeurs = [note['valeur'] for note in notes]
+
+        # Convertir en dictionnaire {matiere_id: valeur}
+        etudiant['notes'] = {note['matiere_id']: note['valeur'] for note in notes}
+        etudiant['moyenne'] = round(sum(valeurs) / len(valeurs), 2) if valeurs else 0.0
+        etudiant['notes_dict'] = etudiant['notes']  # ✅ ligne à ajouter
 
 
+        # Pour moyenne générale
+        total_notes += len(valeurs)
+        total_valeurs += sum(valeurs)
+
+    moyenne_generale = round(total_valeurs / total_notes, 2) if total_notes > 0 else 0.0
+    try:
+        r = requests.get("http://localhost:5000/matieres")
+        matieres = r.json() if r.status_code == 200 else []
+        print("📚 Matières récupérées :", matieres)
+
+    except:
+        matieres = []
+    niveaux = ["L1", "L2", "L3", "M1", "M2", "Doctorat"]
+    
+    return render_template("admin/liste_etudiants_note.html",
+                           etudiants=etudiants,
+                           matieres=matieres,
+                           niveaux=niveaux,
+                           matieres_affichees=matieres,
+                           nombre_etudiants=len(etudiants),
+                           moyenne_generale=moyenne_generale,
+                           nombre_evaluations=total_notes,
+                           search_name='',
+                           matiere_id='',
+                           niveau_filtre='')
+
+
+# Ajout Notes
 @app.route('/notes/ajouter', methods=['GET', 'POST'])
 def ajouter_note():
+    error = None
+
+    # Toujours récupérer les étudiants et matières, quelle que soit la méthode
+    try:
+        r = requests.get("http://localhost:5001/etudiants")
+        etudiants = r.json() if r.status_code == 200 else []
+    except:
+        etudiants = []
+
+    try:
+        r = requests.get("http://localhost:5000/matieres")
+        matieres = r.json() if r.status_code == 200 else []
+
+    except:
+        matieres = []
+
     if request.method == 'POST':
-        # Récupérer les données du formulaire
-        etudiant_id = int(request.form.get('etudiant_id'))
-        matiere_id = int(request.form.get('matiere_id'))
-        note_valeur = float(request.form.get('note'))
-        date_evaluation = request.form.get('date_evaluation')
-        coefficient = int(request.form.get('coefficient'))
-        commentaire = request.form.get('commentaire')
+        try:
+            etudiant_id = int(request.form.get('etudiant_id'))
+            matiere_id = int(request.form.get('matiere_id'))
+            note_valeur = float(request.form.get('note'))
+            date_evaluation = request.form.get('date_evaluation')
+            coefficient = int(request.form.get('coefficient'))
+            commentaire = request.form.get('commentaire')
 
-        # Trouver l'étudiant
-        etudiant = next((e for e in etudiants_list if e['id'] == etudiant_id), None)
-        if etudiant:
-            # Ajouter la note à l'étudiant
-            etudiant['notes'][matiere_id] = note_valeur
+            r = requests.post("http://localhost:5000/notes", json={
+                "etudiant_id": etudiant_id,
+                "matiere_id": matiere_id,
+                "valeur": note_valeur,
+                "date_evaluation": date_evaluation,
+                "coefficient": coefficient,
+                "commentaire": commentaire
+            })
 
-            # Recalcul de la moyenne simple (à affiner avec coefficient si besoin)
-            notes_values = etudiant['notes'].values()
-            etudiant['moyenne'] = sum(notes_values) / len(notes_values)
+            if r.status_code == 201:
+                return redirect(url_for('liste_etudiants_note'))
+            else:
+                error = f"Erreur : {r.json().get('erreur', 'Ajout impossible')}"
+        except Exception as e:
+            error = f"Erreur microservice : {e}"
 
-        # Retour à la liste des notes
-        return redirect(url_for('liste_notes'))
-
-    # GET : afficher le formulaire
-    return render_template('admin/ajouter_note.html', etudiants=etudiants_list, matieres=matieres)
-
-
-# ==== Accès rapide admin ====
-@app.route('/admin-direct')
-def admin_direct():
-    session['role'] = 'admin'
-    return redirect(url_for('admin_dashboard'))
+    return render_template('admin/ajouter_note.html', etudiants=etudiants, matieres=matieres, error=error)
 
 # ==== Accès rapide etudiant ====
 
@@ -249,7 +429,7 @@ def student_direct(id):
     session['student_id'] = id
     return redirect(url_for('dashboard_etudiant', id=id))
 
-from datetime import datetime
+
 
 @app.route("/student/dashboard/<int:id>")
 def dashboard_etudiant(id):
@@ -300,4 +480,4 @@ def logout():
 
 # ==== Lancement ====
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5002)

@@ -1,3 +1,4 @@
+
 name: CI - Docker Flask Build
 
 on:
@@ -6,7 +7,7 @@ on:
 jobs:
   build-notes-service:
     runs-on: ubuntu-latest
-    name: Build Flask Image 
+    name: Build Flask Image
 
     steps:
       - name: Checkout code
@@ -37,7 +38,9 @@ jobs:
       - name: Build Docker image (etudiants-service)
         working-directory: backend/etudiants-service
         run: |
-          docker build -t tynaz02/etudiants-service:Version1 .
+
+          docker build -t tynaz02/etudiants-service:version2 .
+
 
       - name: List Docker images
         run: docker images

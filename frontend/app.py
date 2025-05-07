@@ -224,12 +224,6 @@ def details_etudiant(id):
 
     return render_template('admin/details_etudiant.html', etudiant=etudiant)
 
-
-
-
-
-
-
 # Supprimer un etudiant 
 @app.route('/etudiant/supprimer/<int:id>', methods=['POST'])
 def supprimer_etudiant(id):
@@ -312,46 +306,38 @@ def modifier_note(id):
     except Exception as e:
         return f"Erreur de récupération : {e}", 500
 
-# DELETE notes
-@app.route('/notes/supprimer/<int:id>', methods=['POST'])
-def supprimer_note(id):
-    try:
-        r = requests.delete(f"http://localhost:5000/notes/{id}")
-        if r.status_code == 200:
-            return redirect(url_for('liste_etudiants_notes'))
-        else:
-            return f"Erreur : {r.status_code}", 400
-    except Exception as e:
-        return f"Erreur de suppression : {e}", 500
-
-
-
 @app.route('/notes')
 def liste_notes():
+    
     try:
         r = requests.get("http://localhost:5001/etudiants")
         etudiants = r.json() if r.status_code == 200 else []
     except Exception as e:
         etudiants = []
+        
+    print("Étudiants reçus :")
+    for e in etudiants:
+        print(e)
 
     total_notes = 0
     total_valeurs = 0
 
     for etudiant in etudiants:
         notes = etudiant.get('notes', [])
-        # Extraire les valeurs des notes
+
+        # ✅ Ajoute cette ligne pour conserver les notes complètes avec id
+        etudiant['notes'] = notes
+
+        # ✅ Dictionnaire pour l'affichage simple des notes
+        etudiant['notes_dict'] = {note['matiere_id']: note['valeur'] for note in notes}
+
+        # ✅ Calcule la moyenne
         valeurs = [note['valeur'] for note in notes]
-
-        # Convertir en dictionnaire {matiere_id: valeur}
-        etudiant['notes'] = {note['matiere_id']: note['valeur'] for note in notes}
         etudiant['moyenne'] = round(sum(valeurs) / len(valeurs), 2) if valeurs else 0.0
-        etudiant['notes_dict'] = etudiant['notes']  # ✅ ligne à ajouter
 
-
-        # Pour moyenne générale
+        # ✅ Incrémente les totaux pour la moyenne générale
         total_notes += len(valeurs)
         total_valeurs += sum(valeurs)
-
     moyenne_generale = round(total_valeurs / total_notes, 2) if total_notes > 0 else 0.0
     try:
         r = requests.get("http://localhost:5000/matieres")

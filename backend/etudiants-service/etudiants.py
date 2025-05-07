@@ -50,6 +50,7 @@ def get_etudiants():
     for e in etudiants:
         notes_data = [
             {
+                "id": note.id,
                 "matiere_id": note.matiere_id,
                 "valeur": note.valeur
             } for note in e.notes
@@ -116,6 +117,7 @@ def get_etudiant(id_etudiant):
     if etudiant:
         notes_data = [
             {
+                "id": note.id,
                 "matiere_id": note.matiere_id,
                 "valeur": note.valeur,
                 "coefficient": note.coefficient,
@@ -173,6 +175,7 @@ def delete_etudiant(id_etudiant):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

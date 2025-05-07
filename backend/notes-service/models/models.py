@@ -13,8 +13,7 @@ class Etudiant(db.Model):
     password = db.Column(db.String(128), nullable=False)
     age = db.Column(db.Integer)
     niveau = db.Column(niveau_enum)
-
-    notes = db.relationship("Note", backref="etudiant", lazy=True)
+    notes = db.relationship("Note", backref="etudiant", lazy=True, cascade="all, delete-orphan")
     def normalize_niveau(self):
         if self.niveau:
             self.niveau = self.niveau.strip().lower()

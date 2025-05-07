@@ -157,19 +157,7 @@ def update_note(id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
-@app.route("/notes/<int:id>", methods=["DELETE"])
-def delete_note(id):
-    note = Note.query.get(id)
-    if not note:
-        return jsonify({"error": "Note introuvable"}), 404
 
-    try:
-        db.session.delete(note)
-        db.session.commit()
-        return jsonify({"message": "Note supprimée avec succès."}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

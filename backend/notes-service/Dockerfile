@@ -7,8 +7,12 @@ WORKDIR /app
 # Étape 3 : Copier les fichiers nécessaires dans le conteneur
 COPY requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install flask_sqlalchemy
+
 
 COPY . .
 
 # Étape 4 : Démarrer l’application
-CMD ["python", "notes.py"]
+CMD ["sh", "-c", "python notes.py & sleep 5 && python add_matiere.py && wait"]
+
+

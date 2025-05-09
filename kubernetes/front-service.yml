@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: front-container
-          image: tynaz02/front-flask:version1
+          image: tynaz02/front-flask:version2.1
           ports:
             - containerPort: 5002
 

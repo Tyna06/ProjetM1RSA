@@ -40,7 +40,7 @@ def login():
 
         elif role == 'student':
             try:
-                r = requests.post("http://localhost/etudiants/login", json={"email": email, "password": password})
+                r = requests.post("http://etudiants-service/etudiants/login", json={"email": email, "password": password})
                 if r.status_code == 200:
                     data = r.json()
                     session['username'] = email
@@ -81,7 +81,7 @@ def sign_in():
         else:
             try:
                 # Appel microservice
-                response = requests.post("http://localhost/etudiants", json={
+                response = requests.post("http://etudiants-service/etudiants", json={
                     "nom": nom,
                     "prenom": prenom,
                     "age": age,
@@ -104,7 +104,7 @@ def sign_in():
 def admin_dashboard():
     if session.get('role') == 'admin':
         try:
-            r = requests.get("http://localhost/etudiants")
+            r = requests.get("http://etudiants-service/etudiants")
             if r.status_code == 200:
                 etudiants = r.json()
                 nombre_etudiants = len(etudiants)
@@ -156,7 +156,7 @@ def ajouter_etudiant():
         }
 
         try:
-            r = requests.post('http://localhost/etudiants', json=etudiant_data)
+            r = requests.post('http://etudiants-service/etudiants', json=etudiant_data)
             if r.status_code == 201:
                 return redirect(url_for('liste_etudiants'))
             else:
@@ -173,7 +173,7 @@ def ajouter_etudiant():
 @app.route('/etudiant/liste')
 def liste_etudiants():
     try:
-        r = requests.get("http://localhost/etudiants")
+        r = requests.get("http://etudiants-service/etudiants")
         if r.status_code == 200:
             etudiants = r.json()
         else:
@@ -191,7 +191,7 @@ def liste_etudiants():
 @app.route('/etudiant/<int:id>')
 def details_etudiant(id):
     try:
-        r = requests.get(f"http://localhost/etudiants/{id}")
+        r = requests.get(f"http://etudiants-service/etudiants/{id}")
         if r.status_code == 200:
             etudiant = r.json()
         else:
@@ -200,7 +200,7 @@ def details_etudiant(id):
         return f"Erreur lors de la connexion au microservice : {e}", 500
 
     try:
-        r = requests.get("http://localhost/notes/matieres")
+        r = requests.get("http://notes-service/matieres")
         matieres = r.json() if r.status_code == 200 else []
         print(" Matières récupérées :", matieres)
     except:
@@ -229,7 +229,7 @@ def details_etudiant(id):
 @app.route('/etudiant/supprimer/<int:id>', methods=['POST'])
 def supprimer_etudiant(id):
     try:
-        r = requests.delete(f"http://localhost/etudiants/{id}")
+        r = requests.delete(f"http://etudiants-service/etudiants/{id}")
         if r.status_code == 200:
             return redirect(url_for('liste_etudiants'))
         else:
@@ -241,7 +241,7 @@ def supprimer_etudiant(id):
 @app.route('/etudiant/modifier/<int:id>', methods=['GET', 'POST'])
 def modifier_etudiant(id):
     try:
-        r = requests.get(f"http://localhost/etudiants/{id}")
+        r = requests.get(f"http://etudiants-service/etudiants/{id}")
         if r.status_code != 200:
             return "Étudiant introuvable", 404
         etudiant = r.json()
@@ -258,7 +258,7 @@ def modifier_etudiant(id):
             'password': request.form.get('password')  # si tu veux permettre la modif
         }
         try:
-            r = requests.put(f"http://localhost/etudiants/{id}", json=updated_data)
+            r = requests.put(f"http://etudiants-service/etudiants/{id}", json=updated_data)
             if r.status_code == 200:
                 return redirect(url_for('liste_etudiants'))
             else:
@@ -286,7 +286,7 @@ def modifier_note(id):
         }
 
         try:
-            r = requests.put(f"http://localhost/notes/{id}", json=data)
+            r = requests.put(f"http://notes-service/notes/{id}", json=data)
             if r.status_code == 200:
                 return redirect(url_for('liste_etudiants_notes'))
             else:
@@ -296,8 +296,8 @@ def modifier_note(id):
 
     # GET : afficher la note à modifier
     try:
-        r_note = requests.get(f"http://localhost/notes/{id}")
-        r_matieres = requests.get("http://localhost/notes/matieres")
+        r_note = requests.get(f"http://notes-service/notes/{id}")
+        r_matieres = requests.get("http://notes-service/matieres")
         if r_note.status_code == 200 and r_matieres.status_code == 200:
             note = r_note.json()
             matieres_list = r_matieres.json()
@@ -311,7 +311,7 @@ def modifier_note(id):
 def liste_notes():
     
     try:
-        r = requests.get("http://localhost/etudiants")
+        r = requests.get("http://etudiants-service/etudiants")
         etudiants = r.json() if r.status_code == 200 else []
     except Exception as e:
         etudiants = []
@@ -341,7 +341,7 @@ def liste_notes():
         total_valeurs += sum(valeurs)
     moyenne_generale = round(total_valeurs / total_notes, 2) if total_notes > 0 else 0.0
     try:
-        r = requests.get("http://localhost/notes/matieres")
+        r = requests.get("http://notes-service/matieres")
         matieres = r.json() if r.status_code == 200 else []
         print("📚 Matières récupérées :", matieres)
 
@@ -369,13 +369,13 @@ def ajouter_note():
 
     # Toujours récupérer les étudiants et matières, quelle que soit la méthode
     try:
-        r = requests.get("http://localhost/etudiants")
+        r = requests.get("http://etudiants-service/etudiants")
         etudiants = r.json() if r.status_code == 200 else []
     except:
         etudiants = []
 
     try:
-        r = requests.get("http://localhost/notes/matieres")
+        r = requests.get("http://notes-service/matieres")
         matieres = r.json() if r.status_code == 200 else []
 
     except:
@@ -390,7 +390,7 @@ def ajouter_note():
             coefficient = int(request.form.get('coefficient'))
             commentaire = request.form.get('commentaire')
 
-            r = requests.post("http://localhost/notes", json={
+            r = requests.post("http://notes-service/notes", json={
                 "etudiant_id": etudiant_id,
                 "matiere_id": matiere_id,
                 "valeur": note_valeur,
@@ -424,7 +424,7 @@ def dashboard_etudiant(id):
         return redirect(url_for('login'))
 
     try:
-        r = requests.get(f"http://localhost/etudiants/{id}")
+        r = requests.get(f"http://etudiants-service/etudiants/{id}")
         if r.status_code == 200:
             etudiant = r.json()
             etudiant['prenom'] = session.get('student_prenom', '')

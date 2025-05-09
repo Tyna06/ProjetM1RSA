@@ -5,7 +5,7 @@ from models.models import Etudiant
 app = Flask(__name__)
 
 # Connexion PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@postgresql-service:5432/rsa_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)

@@ -9,16 +9,23 @@ from models.models import Note, Matiere,Etudiant
 app = Flask(__name__)
 
 # Connexion à la même base PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@postgresql-service:5432/rsa_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+def precharger_matieres():
+    matieres = ["Maths", "Physique", "Info"]
+    for nom in matieres:
+        if not Matiere.query.filter_by(nom=nom).first():
+            db.session.add(Matiere(nom=nom))
+    db.session.commit()
 
 @app.route("/init-db")
 def create_tables():
     with app.app_context():
         # db.drop_all()
         db.create_all()
+        precharger_matieres()
     return "✅ Base de données (notes) initialisée !"
 
 
@@ -95,7 +102,7 @@ def add_note():
 
     # Vérifier si l'étudiant existe via le service étudiant
     try:
-        r = requests.get(f"http://localhost:5001/etudiants/{etudiant_id}")
+        r = requests.get(f"http://etudiants-service:5001/etudiants/{etudiant_id}")
         if r.status_code != 200:
             return jsonify({"error": "Étudiant non trouvé"}), 404
     except Exception as e:

@@ -14,12 +14,12 @@ spec:
     spec:
       containers:
         - name: notes-container
-          image: tynaz02/notes-service:Version3
+          image: tynaz02/notes-service:Version4
           ports:
             - containerPort: 5000
           env:
             - name: DATABASE_URL
-              value: postgresql://rsa_user:rsa_pass@postgres-service:5432/rsa_db  
+              value: postgresql://rsa_user:rsa_pass@postgresql-service:5432/rsa_db  
 
 ---
 

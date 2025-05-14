@@ -25,6 +25,26 @@ Concevoir, développer et déployer une application web cloud-native de gestion 
 * Interface admin avec statistiques globales
 * Filtrage des notes par matière et niveau
 
+  ## 🧪 Utilisation et authentification
+
+### 🎓 Accès étudiant
+- Chaque étudiant peut s'inscrire via le formulaire prévu.
+- Une fois connecté, il accède à son dashboard personnel avec ses informations et ses notes.
+
+### 👨‍💼 Accès admin
+- Identifiant : `admin@demo`
+- Mot de passe : `admin`
+
+> ⚠️ Ces identifiants sont **simulés dans le front Flask** et peuvent être modifiés dans le code si nécessaire.
+
+### 🔄 Possibilités de test :
+- Ajouter des étudiants
+- Ajouter des notes
+- Filtrer les notes par matière ou niveau
+- Modifier / supprimer les données
+- Vérifier les dashboards dynamiques
+
+
 ## 📊 Architecture globale
 
 * 2 microservices backend :
@@ -100,15 +120,6 @@ ProjetM1RSA/
 
 * Ziane Thinhinane (Tyna)
 * Gaye Ndeye Cissé
-
-## 📸 Captures d'écran à inclure
-
-* Dashboard étudiant
-* Dashboard admin
-* Liste des étudiants / notes
-* Ajout / modification d'étudiant
-* `kubectl get pods`
-* `kubectl get peerauthentication`
 
 ## 🔗 Lien du dépôt
 

@@ -10,5 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+EXPOSE 5001
+
 # Étape 4 : Démarrer l’application
 CMD ["python", "etudiants.py"]

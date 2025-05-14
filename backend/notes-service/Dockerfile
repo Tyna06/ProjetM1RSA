@@ -10,5 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+EXPOSE 5000
+
 # Étape 4 : Démarrer l’application
 CMD ["python", "notes.py"]

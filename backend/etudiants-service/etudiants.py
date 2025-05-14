@@ -5,18 +5,14 @@ from models.models import Etudiant
 app = Flask(__name__)
 
 # Connexion PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@localhost:5432/rsa_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@postgres-service:5432/rsa_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-@app.route("/init-db") 
-def create_tables():
-    # db.drop_all()
+# ✅ Création automatique des tables au démarrage
+with app.app_context():
     db.create_all()
-    return "✅ Base de données initialisée !"
-
-    
 
 # Connexion d'un etudiant
 @app.route("/login", methods=["POST"])
@@ -178,4 +174,4 @@ def delete_etudiant(id_etudiant):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001)

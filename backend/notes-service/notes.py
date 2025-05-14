@@ -13,15 +13,17 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rsa_user:rsa_pass@postgres
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-
-with app.app_context():
-    db.create_all()
-    # insérer les matières automatiquement si base vide
-    matieres = ["Mathématiques", "Physique", "Chimie", "Informatique"]
-    for nom in matieres:
-        if not Matiere.query.filter_by(nom=nom).first():
-            db.session.add(Matiere(nom=nom))
-    db.session.commit()
+@app.route("/init-db")
+def init_db():
+    with app.app_context():
+        db.create_all()
+        # insérer les matières automatiquement si base vide
+        matieres = ["Mathématiques", "Physique", "Chimie", "Informatique"]
+        for nom in matieres:
+            if not Matiere.query.filter_by(nom=nom).first():
+                db.session.add(Matiere(nom=nom))
+        db.session.commit()
+    return "✅ Notes : base initialisée"
 
 # POST : ajouter une matière
 @app.route("/ajouter-matiere", methods=["POST"])

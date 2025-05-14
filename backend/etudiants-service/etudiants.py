@@ -10,9 +10,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
 
-# ✅ Création automatique des tables au démarrage
-with app.app_context():
-    db.create_all()
+@app.route("/init-db")
+def init_db():
+    with app.app_context():
+        db.create_all()
+    return "✅ Étudiants : base initialisée"
 
 # Connexion d'un etudiant
 @app.route("/login", methods=["POST"])

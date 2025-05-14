@@ -16,7 +16,7 @@ spec:
       containers:
         - name: etudiants-container
 
-          image: tynaz02/etudiants-service:projetM1.4
+          image: tynaz02/etudiants-service:projetM1.5
           ports:
             - containerPort: 5001
 ---

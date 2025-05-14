@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-db-job-notes
+spec:
+  template:
+    spec:
+      containers:
+      - name: init-db
+        image: curlimages/curl:latest
+        command: ["sh", "-c", "sleep 20 && curl http://notes-service:5000/init-db"]
+      restartPolicy: Never
+  backoffLimit: 3

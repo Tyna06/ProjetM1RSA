@@ -16,8 +16,9 @@
                 Gestion Scolaire
             </h1>
             <div class="admin-info">
-                <i class="far fa-calendar-alt"></i>
-                <div class="admin-date">{{ date_du_jour }}</div>
+                <a href="{{ url_for('logout') }}" class="admin-button outline">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
             </div>
         </div>
 

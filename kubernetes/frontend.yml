@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: tynaz02/frontend:projetM1.3
+          image: tynaz02/frontend:projetM1.7
           ports:
             - containerPort: 5002
 ---
@@ -29,4 +29,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 5002
-  type: NodePort
+  

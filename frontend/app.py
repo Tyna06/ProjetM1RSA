@@ -287,7 +287,7 @@ def modifier_note(id):
         try:
             r = requests.put(f"http://notes-service/notes/{id}", json=data)
             if r.status_code == 200:
-                return redirect(url_for('liste_etudiants_notes'))
+                return redirect(url_for('liste_notes'))
             else:
                 error = f"Erreur : {r.status_code}"
         except Exception as e:
@@ -399,7 +399,7 @@ def ajouter_note():
             })
 
             if r.status_code == 201:
-                return redirect(url_for('liste_etudiants_note'))
+                return redirect(url_for('liste_notes'))
             else:
                 error = f"Erreur : {r.json().get('erreur', 'Ajout impossible')}"
         except Exception as e:

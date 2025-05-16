@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: notes-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: notes
@@ -27,6 +27,7 @@ metadata:
 spec:
   selector:
     app: notes
+  type: LoadBalancer   
   ports:
     - protocol: TCP
       port: 80

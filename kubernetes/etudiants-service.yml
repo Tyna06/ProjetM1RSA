@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: etudiants-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: etudiants
@@ -27,6 +27,7 @@ metadata:
 spec:
   selector:
     app: etudiants
+  type: LoadBalancer   
   ports:
     - protocol: TCP
       port: 80
